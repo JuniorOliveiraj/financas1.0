@@ -1,6 +1,7 @@
 import 'package:corso_finacas/FormularioModal.dart';
 import 'package:corso_finacas/ListCardsTRansicoes.dart';
 import 'package:corso_finacas/components/grafico.dart';
+import 'package:corso_finacas/components/subMenus.dart';
 import 'package:corso_finacas/models/tranzacao.dart';
 import 'package:flutter/material.dart';
 
@@ -17,12 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Inter",
-        
+
         //dialogBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Finanças'),
-      
     );
   }
 }
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor:const Color.fromARGB(255, 204, 255, 237),        
+        //backgroundColor:const Color.fromARGB(255, 204, 255, 237),
         //Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
@@ -78,11 +78,37 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            GraficoCard(transacoes: _transacoes,),
-            //TransacoesCard(),
+            GraficoCard(
+              transacoes: _transacoes,
+            ),
+            const Submenus(),
+            const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Padding(
+                  padding: EdgeInsets.all(17),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Activities",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.normal),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Today",
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.normal),
+                          ),
+                          const Icon(Icons.arrow_drop_down_outlined, size: 30,)
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 Listcardstransicoes(transacoes: _transacoes),
                 const SizedBox(height: 10),
                 //AdicionarGastosForm(_adicionarTransacao),
