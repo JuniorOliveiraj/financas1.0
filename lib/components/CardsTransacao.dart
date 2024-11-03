@@ -15,9 +15,9 @@ class Cardstransacao extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      //color: const Color.fromARGB(201, 255, 255, 255),
+      //color: Colors.white70,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(11),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -46,11 +46,11 @@ class Cardstransacao extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'R\$$valor',
+                  '-R\$$valor',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 228, 110, 70),
                   ),
                 ),
               ],

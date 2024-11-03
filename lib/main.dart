@@ -92,24 +92,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Activities",
+                        "Atividades",
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.normal),
                       ),
                       Row(
                         children: [
                           Text(
-                            "Today",
+                            "Hoje",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.normal),
                           ),
-                          const Icon(Icons.arrow_drop_down_outlined, size: 30,)
+                          const Icon(
+                            Icons.arrow_drop_down_outlined,
+                            size: 30,
+                          )
                         ],
                       ),
                     ],
                   ),
                 ),
-                Listcardstransicoes(transacoes: _transacoes),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Listcardstransicoes(transacoes: _transacoes),
+                ),
                 const SizedBox(height: 10),
                 //AdicionarGastosForm(_adicionarTransacao),
               ],

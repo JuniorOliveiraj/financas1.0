@@ -10,7 +10,7 @@ class Listcardstransicoes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 600, // Defina a altura ou use uma que se ajuste à tela
+      height: 380, // Defina a altura ou use uma que se ajuste à tela
       child: transacoes.isEmpty
           ? const Center(
               child: Text(
