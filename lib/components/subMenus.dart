@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Submenus extends StatefulWidget {
-  const Submenus({super.key});
-
+  const Submenus({super.key , required this.openModal});
+final Function(BuildContext) openModal; // Função que recebe o contexto
   @override
   State<Submenus> createState() => _SubmenusState();
 }
@@ -16,29 +16,37 @@ class _SubmenusState extends State<Submenus> {
     {"nome": "More", "img": 'assets/images/svgs/More.svg'},
   ];
 
+  void onMenuItemClick(String nome) {
+    if (nome == "Send") {
+       widget.openModal(context); // Passando o contexto do filho para o pai
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: cardsMenu.map((e) {
-          return Padding(
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                 '${e['img']}',
-                  width: 80,
-                  semanticsLabel: e['nome'],
-                 // placeholderBuilder: (BuildContext context) => CircularProgressIndicator(),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  e['nome']!,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+          return GestureDetector(
+            onTap: () => onMenuItemClick(e['nome']!), // Chama a função com o nome do item
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    '${e['img']}',
+                    width: 80,
+                    semanticsLabel: e['nome'],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    e['nome']!,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ),
           );
         }).toList(),

@@ -26,6 +26,7 @@ class Listcardstransicoes extends StatelessWidget {
                   data: transacao.data,
                   titulo: transacao.titulo,
                   valor: transacao.valor,
+                  avatarImage: transacao.avatarImage,
                 );
               },
             ),

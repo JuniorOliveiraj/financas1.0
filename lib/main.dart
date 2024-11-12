@@ -3,6 +3,7 @@ import 'package:corso_finacas/ListCardsTRansicoes.dart';
 import 'package:corso_finacas/components/grafico.dart';
 import 'package:corso_finacas/components/subMenus.dart';
 import 'package:corso_finacas/models/tranzacao.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,15 +12,14 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fincas',
+      title: 'Finanças',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Inter",
-
-        //dialogBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Finanças'),
@@ -36,6 +36,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Lista de transações
+  final List<Tranzacao> _transacoes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGastos();
+  }
+
+  // Função para abrir o modal de adicionar gasto
   void _openModalForm(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -45,19 +55,50 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  final List<Tranzacao> _transacoes = [
-    Tranzacao(id: 1, titulo: 'Uber', valor: 100.00, data: DateTime.now()),
-    Tranzacao(id: 1, titulo: 'Uber', valor: 50.00, data: DateTime.now()),
-    Tranzacao(id: 1, titulo: 'Uber', valor: 10.50, data: DateTime.now()),
-  ];
+  Future<void> fetchGastos() async {
+    try {
+      var response =
+          await Dio().get("https://api.juniorbelem.com/list/gastos/todos");
 
+      var data = response.data;
+
+      if (data != null && data is Map && data['resultadoVerificacao'] != null) {
+        setState(() {
+          _transacoes.clear();
+
+          // Itera sobre os dados e adiciona as transações
+          for (var item in data['resultadoVerificacao']) {
+            _transacoes.add(
+              Tranzacao(
+                id: _transacoes.length + 1,
+                titulo: item['name'] ?? 'Nome não disponível',
+                valor: (item['valor'] != null && item['valor'] is num)
+                    ? (item['valor'] as num).toDouble()
+                    : 0.0,
+                data: DateTime.parse(item['data']).toLocal(),
+                avatarImage: item['avatarImage'] ??
+                    'https://http2.mlstatic.com/storage/activities-middle-end/activities-assets/rowfeed/svg/ic_payments_default_v2.svg',
+              ),
+            );
+          }
+        });
+      } else {
+        print("Estrutura de dados inesperada: $data");
+      }
+    } catch (error) {
+      print("Erro ao buscar dados: $error");
+    }
+  }
+
+  // Função para adicionar uma transação manualmente
   void _adicionarTransacao(String titulo, double valor) {
     final novaTransacao = Tranzacao(
-      id: DateTime.now().microsecondsSinceEpoch,
-      titulo: titulo,
-      valor: valor,
-      data: DateTime.now(),
-    );
+        id: DateTime.now().microsecondsSinceEpoch,
+        titulo: titulo,
+        valor: valor,
+        data: DateTime.now(),
+        avatarImage:
+            'https://http2.mlstatic.com/storage/activities-middle-end/activities-assets/rowfeed/svg/ic_payments_default_v2.svg');
 
     setState(() {
       _transacoes.add(novaTransacao);
@@ -69,19 +110,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor:const Color.fromARGB(255, 204, 255, 237),
-        //Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             GraficoCard(
               transacoes: _transacoes,
             ),
-            const Submenus(),
+            Submenus(
+              openModal: _openModalForm, // Passando a função de abrir modal para o filho
+            ),
             const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -99,36 +138,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       Row(
                         children: [
                           Text(
-                            "Hoje",
+                            "Esse mês",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.normal),
                           ),
-                          const Icon(
+                          Icon(
                             Icons.arrow_drop_down_outlined,
                             size: 30,
-                          )
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Listcardstransicoes(transacoes: _transacoes),
                 ),
                 const SizedBox(height: 10),
-                //AdicionarGastosForm(_adicionarTransacao),
               ],
-            )
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        onPressed: () => _openModalForm(context),
-        tooltip: 'Adicionar',
-        child: const Icon(Icons.add),
       ),
     );
   }

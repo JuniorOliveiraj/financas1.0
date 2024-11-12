@@ -1,44 +1,77 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class Cardstransacao extends StatelessWidget {
-  const Cardstransacao(
-      {super.key,
-      required this.data,
-      required this.titulo,
-      required this.valor});
+  const Cardstransacao({
+    super.key,
+    required this.data,
+    required this.titulo,
+    required this.valor,
+    required this.avatarImage,
+  });
+
   final DateTime data;
   final String titulo;
   final double valor;
+  final String avatarImage;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      //color: Colors.white70,
       child: Padding(
         padding: const EdgeInsets.all(11),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Text(
-                  titulo,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: Container(
+                      child: avatarImage.endsWith('.svg')
+                      ? SvgPicture.network(
+                          avatarImage,
+                          width: 30,
+                          height: 30,
+                          semanticsLabel: "Imagem do avatar",
+                          placeholderBuilder: (BuildContext context) =>
+                              const CircularProgressIndicator(),
+                        )
+                      : Image.network(
+                          avatarImage,
+                          width: 30,
+                          height: 30,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  DateFormat('d/MM/y').format(data),
-                      
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                const SizedBox(
+                    width: 10), // Espaçamento entre a imagem e o texto
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      titulo,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      DateFormat('d/MM/y').format(data),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -46,7 +79,7 @@ class Cardstransacao extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '-R\$$valor',
+                  '-R\$${valor.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
